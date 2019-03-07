@@ -6,7 +6,6 @@ class UHC : JavaPlugin(){
 
     override fun onEnable(){
         System.out.println("starssts")
-        System.out.println("starssts")
     }
 
     override fun onDisable(){
