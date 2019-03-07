@@ -19,13 +19,12 @@ class CoreEvents(val instance: UHC) : Listener{
 
         uhcScoreboard.create()
         uhcScoreboard.setLine(14, "Testing the limits of the scoreboard")
-        uhcScoreboard.setLine(13, "It should be able to go all the way up to 48 cha")
+        uhcScoreboard.setLine(13, "It should be able to go all the way up to 48")
+
+
+        instance.scoreboardManager!!.map[e.player.uniqueId] = uhcScoreboard
 
         e.player.sendMessage("You've joined the server: " + Random.nextInt(150) +1)
-
-        uhcScoreboard.destroy()
-        uhcScoreboard.create()
-        uhcScoreboard.setLine(14, "Testing the sdf of the scoreboard")
 
     }
 
