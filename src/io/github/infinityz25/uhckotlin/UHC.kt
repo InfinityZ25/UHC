@@ -5,7 +5,7 @@ import org.bukkit.plugin.java.JavaPlugin
 class UHC : JavaPlugin(){
 
     override fun onEnable(){
-        System.out.println("starts")
+        System.out.println("starssts")
     }
 
     override fun onDisable(){
