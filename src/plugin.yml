@@ -1,3 +1,6 @@
 name: UHC-Kotlin
-main: UHC
+main: io.github.infinityz25.uhckotlin.UHC
 version: 0.1
+
+commands:
+  uhc:
