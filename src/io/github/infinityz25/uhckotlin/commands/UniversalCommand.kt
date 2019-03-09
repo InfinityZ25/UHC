@@ -25,6 +25,7 @@ class UniversalCommand(val instance: UHC) : CommandExecutor{
                 for (i in  1 until args.size) allArgs.append(args[i]).append(" ")
 
                 score?.setLine(args[0].toInt(), allArgs.toString().trim())
+                //test
 
 
 
