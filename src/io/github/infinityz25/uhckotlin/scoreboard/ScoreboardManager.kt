@@ -5,10 +5,10 @@ import java.util.*
 
 class ScoreboardManager(val instance: UHC){
 
-    var map = mutableMapOf<UUID, UHCScoreboard>()
+    var map = mutableMapOf<UUID, board>()
 
 
-    fun getScoreboard(uuid: UUID) : UHCScoreboard{
+    fun getScoreboard(uuid: UUID) : board{
 
         return map.getValue(uuid)
     }

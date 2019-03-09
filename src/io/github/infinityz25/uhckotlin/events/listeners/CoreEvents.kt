@@ -1,7 +1,7 @@
 package io.github.infinityz25.uhckotlin.events.listeners
 
 import io.github.infinityz25.uhckotlin.UHC
-import io.github.infinityz25.uhckotlin.scoreboard.UHCScoreboard
+import io.github.infinityz25.uhckotlin.scoreboard.board
 import net.md_5.bungee.api.ChatColor
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -17,7 +17,7 @@ class CoreEvents(val instance: UHC) : Listener{
 
     @EventHandler
     fun onPlayerJoin(e: PlayerJoinEvent){
-        val uhcScoreboard = UHCScoreboard(e.player, ChatColor.translateAlternateColorCodes('&', "&b  Badlion UHC  "))
+        val uhcScoreboard = board(e.player, ChatColor.translateAlternateColorCodes('&', "&b  Badlion UHC  "))
 
         uhcScoreboard.create()
         uhcScoreboard.setLine(9, ChatColor.translateAlternateColorCodes('&', "&aGame Time: &f00:00:00"))
@@ -37,9 +37,6 @@ class CoreEvents(val instance: UHC) : Listener{
 
     }
 
-    @EventHandler
-    fun onLeave(e: PlayerQuitEvent) {
-    }
 
 }
 
