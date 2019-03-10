@@ -120,7 +120,6 @@ class HenixBar(var title: String, var player: Player) : BukkitRunnable() {
             this.cancel()
             return
         }
-
         val location = getWitherLocation(player.eyeLocation)
         witherEntity.setLocation(location.x, location.y, location.z, location.yaw, location.pitch)
         val packetPlayOutEntityTeleport = PacketPlayOutEntityTeleport(witherEntity)
@@ -128,6 +127,7 @@ class HenixBar(var title: String, var player: Player) : BukkitRunnable() {
 
     }
 
+    //TODO: CHECK SET PROGRESS, CAUSES BUG WITH VISIBILITY OF ENTITY ONCE PERCENTAGE <0.5 (VANILLA BEHAVIOR, MAYBE CREATE CUSTOM MOB?)
     fun setProgress(progress: Float) {
         witherEntity.health = progress * witherEntity.maxHealth
 
@@ -135,6 +135,12 @@ class HenixBar(var title: String, var player: Player) : BukkitRunnable() {
             PacketPlayOutEntityMetadata(witherEntity.id, witherEntity.dataWatcher, true)
 
         getConnection(player).sendPacket(packetPlayOutEntityMetadata)
+    }
+    fun destroy(){
+        val packet = PacketPlayOutEntityDestroy(witherEntity.id)
+        getConnection(player).sendPacket(packet)
+        cancel()
+
     }
 
     fun updateTitle(title: String) {
@@ -151,7 +157,7 @@ class HenixBar(var title: String, var player: Player) : BukkitRunnable() {
 }
 
 private fun getWitherLocation(location: Location): Location {
-    return location.add(location.direction.normalize().multiply(50).add(Vector(0, 5, 0)))
+    return location.add(location.direction.normalize().multiply(50).add(Vector(0, 15, 0)))
 }
 
 private fun getConnection(player: Player): PlayerConnection {

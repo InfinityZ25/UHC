@@ -13,18 +13,17 @@ class UniversalCommand(val instance: UHC) : CommandExecutor{
     }
 
     override fun onCommand(sender: CommandSender, cmd: Command, label: String, args: Array<out String>): Boolean {
-        if(cmd.name.toLowerCase() == "uhc"){
+        if(cmd.name.equals("uhc", true)){
 
             if(sender is Player){
                 val p : Player = sender
-                p.sendMessage("Player is op")
-                val score = instance.scoreboardManager?.getScoreboard(p.uniqueId)
 
-                val allArgs = StringBuilder()
-
-                for (i in  1 until args.size) allArgs.append(args[i]).append(" ")
-
-                score?.setLine(args[0].toInt(), allArgs.toString().trim())
+                when(args[0]){
+                    "stats"->{
+                        val uhcPlayer = instance.playerManager.getUHCPlayer(p.uniqueId)!!
+                        p.sendMessage("${p.name}' stats:\nKills: ${uhcPlayer.kills}\nDeaths: ${uhcPlayer.deaths}\nDiamonds: ${uhcPlayer.diamonds}\n")
+                    }
+                }
                 //test
 
 

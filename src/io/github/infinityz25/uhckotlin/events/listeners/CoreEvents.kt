@@ -1,18 +1,28 @@
 package io.github.infinityz25.uhckotlin.events.listeners
 
 import io.github.infinityz25.uhckotlin.UHC
+import io.github.infinityz25.uhckotlin.commands.HenixBar
+import io.github.infinityz25.uhckotlin.player.UHCPlayer
 import io.github.infinityz25.uhckotlin.scoreboard.board
 import net.md_5.bungee.api.ChatColor
+import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.scheduler.BukkitRunnable
 import kotlin.random.Random
 
 class CoreEvents(val instance: UHC) : Listener{
 
     init {
         print("testing init method")
+    }
+
+    @EventHandler
+    fun onPreLogin(e: AsyncPlayerPreLoginEvent) {
+        instance.playerDataInterface.cachePlayer(e.uniqueId)
     }
 
     @EventHandler
@@ -31,9 +41,48 @@ class CoreEvents(val instance: UHC) : Listener{
         uhcScoreboard.setLine(1, ChatColor.translateAlternateColorCodes('&', "&bwww.badlion.net"))
 
 
-        instance.scoreboardManager!!.map[e.player.uniqueId] = uhcScoreboard
+        instance.scoreboardManager.map[e.player.uniqueId] = uhcScoreboard
+
+        val bar = HenixBar(ChatColor.translateAlternateColorCodes('&', "&6Welcome to BadlionUHC 600"), e.player)
+        bar.runTaskTimerAsynchronously(instance, 0L, 1L)
+
+        object : BukkitRunnable() {
+            var time = 60
+            var percetange = 0.6F
+            override fun run() {
+                if(time <= 0){
+                    bar.destroy()
+                    cancel()
+                    return
+                }
+                time--
+                percetange-=0.01F
+                bar.updateTitle(ChatColor.translateAlternateColorCodes('&', "&6Welcome to BadlionUHC $time"))
+                bar.setProgress(percetange)
+            }
+        }.runTaskTimerAsynchronously(instance, 20L, 20)
+
 
         e.player.sendMessage("You've joined the server: " + Random.nextInt(150) +1)
+
+        /*Check if the player is cached*/
+        if(instance.playerDataInterface.isCached(e.player.uniqueId)){
+            Bukkit.broadcastMessage("Player is cached \n")
+
+            val cachedPlayer = instance.playerDataInterface.cachedUsers[e.player.uniqueId]!!
+            val uhcPlayer = UHCPlayer(e.player.uniqueId, e.player)
+            /*Get all the data from cached user to an instance of an actual UHC player*/
+            uhcPlayer.deaths = cachedPlayer.deaths
+            uhcPlayer.diamonds = cachedPlayer.diamonds
+            uhcPlayer.kills = cachedPlayer.kills
+
+            /*Add the player with set data to the UHCPlayer List*/
+            instance.playerManager.playerList[e.player.uniqueId] = uhcPlayer
+
+            /*Remove the player from the cache*/
+            instance.playerDataInterface.cachedUsers.remove(e.player.uniqueId)
+
+        }
 
     }
 
