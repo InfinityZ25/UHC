@@ -7,6 +7,8 @@ import java.util.ArrayList
 
 open class NMSBoard(var player: Player, var objectiveName: String){
 
+
+    //TODO: ADD FUNCTION TO ADD PLAYERS TO TEAM TO SHOW NAMETAG ON A DIFFERENT COLOR
     private var created = false
     private var lines = arrayOfNulls<VirtualTeam>(15)
 
