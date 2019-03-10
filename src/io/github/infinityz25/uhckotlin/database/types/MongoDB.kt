@@ -10,6 +10,7 @@ import io.github.infinityz25.uhckotlin.database.PlayerDataInterface
 import org.bson.Document
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
+import org.bukkit.scheduler.BukkitRunnable
 import java.util.*
 import java.util.logging.Level.WARNING
 import java.util.logging.Logger
@@ -56,13 +57,8 @@ class MongoDB(val instance: UHC, connectionURI: String, databaseName: String) : 
             cachedUser.deaths = found.getInteger("deaths")
             cachedUser.diamonds = found.getInteger("diamonds")
             cachedUser.kills = found.getInteger("kills")
-        }else{
-            createDocumentOffline(uuid)
-
-            print("not in collection")
+            cachedUsers[uuid] = cachedUser
         }
-
-        cachedUsers[uuid] = cachedUser
     }
 
 
@@ -70,16 +66,21 @@ class MongoDB(val instance: UHC, connectionURI: String, databaseName: String) : 
         return cachedUsers.containsKey(uuid)
     }
 
-    private fun createDocument(p: Player) {
-        val doc = Document("_id", p.uniqueId)
-            .append("name", p.name)
-            .append("deaths", 0)
-            .append("diamonds", 0)
-            .append("kills", 0)
-        mongoCollection.insertOne(doc)
+    fun createDocument(p: Player) {
+        /*Make the task in Async to avoid blocking the flow of everything else in the plugin whilst waiting for the response of the server*/
+        object : BukkitRunnable() {
+            override fun run() {
+                val doc = Document("_id", p.uniqueId)
+                    .append("name", p.name)
+                    .append("deaths", 0)
+                    .append("diamonds", 0)
+                    .append("kills", 0)
+                mongoCollection.insertOne(doc)
+            }
+        }.runTaskAsynchronously(instance)
     }
 
-    private fun createDocumentOffline(uuid: UUID) {
+    fun createDocumentOffline(uuid: UUID) {
         val doc = Document("_id", uuid)
             .append("name", Bukkit.getOfflinePlayer(uuid).name)
             .append("deaths", 0)

@@ -2,6 +2,7 @@ package io.github.infinityz25.uhckotlin.events.listeners
 
 import io.github.infinityz25.uhckotlin.UHC
 import io.github.infinityz25.uhckotlin.commands.HenixBar
+import io.github.infinityz25.uhckotlin.database.types.MongoDB
 import io.github.infinityz25.uhckotlin.player.UHCPlayer
 import io.github.infinityz25.uhckotlin.scoreboard.board
 import net.md_5.bungee.api.ChatColor
@@ -10,7 +11,6 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent
 import org.bukkit.event.player.PlayerJoinEvent
-import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.scheduler.BukkitRunnable
 import kotlin.random.Random
 
@@ -82,7 +82,17 @@ class CoreEvents(val instance: UHC) : Listener{
 
             /*Remove the player from the cache*/
             instance.playerDataInterface.cachedUsers.remove(e.player.uniqueId)
+        }
+        else{
+            Bukkit.broadcastMessage("Player is not cached, creating a Document for them")
 
+            /*Tell mongodb to create a document for this player, may be worth doing it async*/
+            val mongo = instance.playerDataInterface as MongoDB
+            mongo.createDocument(e.player)
+
+            /*Add the player with default data to the UHCPlayer List*/
+            val uhcPlayer = UHCPlayer(e.player.uniqueId, e.player)
+            instance.playerManager.playerList[e.player.uniqueId] = uhcPlayer
         }
 
     }
