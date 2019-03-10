@@ -49,6 +49,7 @@ class MongoDB(val instance: UHC, connectionURI: String, databaseName: String) : 
     override fun cachePlayer(uuid: UUID) {
         val cachedUser = CachedUser()
 
+        //TODO: Don't create a document when player is not on collection, it does not matter and opens room for hacking and abuses.
         if(isInCollection(uuid)){
             print("in collection")
             val found = findDocument(uuid)!!

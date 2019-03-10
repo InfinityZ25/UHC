@@ -22,6 +22,7 @@ class CoreEvents(val instance: UHC) : Listener{
 
     @EventHandler
     fun onPreLogin(e: AsyncPlayerPreLoginEvent) {
+        //TODO: Check if player is allowed to connect and then cache the player to avoid possible ram abuses
         instance.playerDataInterface.cachePlayer(e.uniqueId)
     }
 
