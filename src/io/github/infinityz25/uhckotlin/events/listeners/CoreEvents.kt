@@ -1,7 +1,6 @@
 package io.github.infinityz25.uhckotlin.events.listeners
 
 import io.github.infinityz25.uhckotlin.UHC
-import io.github.infinityz25.uhckotlin.commands.HenixBar
 import io.github.infinityz25.uhckotlin.database.types.MongoDB
 import io.github.infinityz25.uhckotlin.player.UHCPlayer
 import io.github.infinityz25.uhckotlin.scoreboard.board
@@ -11,7 +10,6 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent
 import org.bukkit.event.player.PlayerJoinEvent
-import org.bukkit.scheduler.BukkitRunnable
 import kotlin.random.Random
 
 class CoreEvents(val instance: UHC) : Listener{
@@ -43,7 +41,7 @@ class CoreEvents(val instance: UHC) : Listener{
 
 
         instance.scoreboardManager.map[e.player.uniqueId] = uhcScoreboard
-
+/*
         val bar = HenixBar(ChatColor.translateAlternateColorCodes('&', "&6Welcome to BadlionUHC 600"), e.player)
         bar.runTaskTimerAsynchronously(instance, 0L, 1L)
 
@@ -63,7 +61,7 @@ class CoreEvents(val instance: UHC) : Listener{
             }
         }.runTaskTimerAsynchronously(instance, 20L, 20)
 
-
+*/
         e.player.sendMessage("You've joined the server: " + Random.nextInt(150) +1)
 
         /*Check if the player is cached*/
