@@ -1,16 +1,26 @@
 package io.github.infinityz25.uhckotlin.commands
 
 import io.github.infinityz25.uhckotlin.UHC
+import net.md_5.bungee.api.ChatColor
 import org.bukkit.Bukkit
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import java.util.*
 
 class UniversalCommand(val instance: UHC) : CommandExecutor{
 
     init{
         print("init universal command")
+    }
+
+    fun getName(uuid: UUID): String{
+        val player = Bukkit.getPlayer(uuid)
+        if(player != null){
+            return player.name
+        }
+        return Bukkit.getOfflinePlayer(uuid).name
     }
 
     override fun onCommand(sender: CommandSender, cmd: Command, label: String, args: Array<out String>): Boolean {
@@ -53,7 +63,10 @@ class UniversalCommand(val instance: UHC) : CommandExecutor{
                                     return true
                                 }
                                 val invite = instance.teamManager.teamRequestMap[uhcPlayer.uuid]
-                                sender.sendMessage("Cancelling your current team invite to ${invite!!.invitee.player.name}")
+                                sender.sendMessage("Cancelling your current team invite to ${invite!!.inviteeName}")
+
+                                Bukkit.getPlayer(invite.inviteeUUID)?.sendMessage("${uhcPlayer.player.name} has cancelled the team invite!")
+
                                 instance.teamManager.teamRequestMap.remove(uhcPlayer.uuid)
 
                             }
@@ -69,7 +82,7 @@ class UniversalCommand(val instance: UHC) : CommandExecutor{
                                     return true
                                 }
                                 if(instance.teamManager.teamRequestMap.contains(uhcPlayer.uuid)){
-                                    uhcPlayer.player.sendMessage("You already have a pending invite for ${instance.teamManager.teamRequestMap[uhcPlayer.uuid]!!.invitee.player.name}!\n" +
+                                    uhcPlayer.player.sendMessage("You already have a pending invite for ${instance.teamManager.teamRequestMap[uhcPlayer.uuid]!!.inviteeName}!\n" +
                                             "use '/uhc team invite cancel' to cancel it")
                                     return true
                                 }
@@ -82,7 +95,7 @@ class UniversalCommand(val instance: UHC) : CommandExecutor{
                                     return true
                                 }
                                 val invite = instance.teamManager.teamRequestMap[targetPlayer.uuid]
-                                if(invite == null || invite.invitee.uuid != uhcPlayer.uuid){
+                                if(invite == null || invite.inviteeUUID != uhcPlayer.uuid){
                                     uhcPlayer.player.sendMessage("Player target hasn't sent you any team invites!")
                                     return true
                                 }
@@ -92,7 +105,20 @@ class UniversalCommand(val instance: UHC) : CommandExecutor{
                                 }else{
                                     invite.rejectInvite()
                                 }
+                            }
+                            "members", "crew", "group", "list"->{
+                                val team = uhcPlayer.team
+                                if(team ==null){
+                                    sender.sendMessage("You are not in a team!")
+                                    return true
+                                }
+                                val str = StringBuilder()
+                                team.teamMembers.forEach {
 
+                                    str.append("${getName(it)}, ")
+                                }
+                                str.replace(str.length-2, str.length, ".")
+                                sender.sendMessage("Team Members: ${str.toString().replace(getName(team.teamOwner), ChatColor.translateAlternateColorCodes('&', "&b${getName(team.teamOwner)}&r"))}")
                             }
                         }
                     }

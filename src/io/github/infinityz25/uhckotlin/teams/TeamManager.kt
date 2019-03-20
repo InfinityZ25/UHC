@@ -8,6 +8,7 @@ import java.util.*
 class TeamManager{
 
     var teamManagement = true
+    var maxTeamSize = 2
     var teamMap = mutableMapOf<UUID, UHCTeam>()
     var teamRequestMap = mutableMapOf<UUID, TeamRequest>()
 
